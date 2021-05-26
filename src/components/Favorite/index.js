@@ -14,7 +14,9 @@ export function Favorite({ starred, onChange }) {
 
 
   function handleOnChange() {
-    onChange(!starred);
+    if(onChange) {
+      onChange(!starred);
+    }
   }
 
   return <StyledButton onClick={handleOnChange} starred={starred} />;

@@ -28,34 +28,6 @@ padding-right: 1em;
 margin-top: 2em;
 `
 
-const BookItemGrid = styled.li`
-display: flex;
-flex-flow: column;
-justify-content: center;
-align-items: center;
-border: 1px solid #e3e3e3;
-`
-
-const BookItemImage =  styled.img`
-width: 128px;
-height: 192px;
-
-`
-
-const BookItemTitle =  styled.h3`
-width: 100%;
-display: -webkit-box;
-overflow: hidden;
-margin: 0;
-text-overflow: ellipsis;
-font-weight: 700;
--webkit-box-orient: vertical;
--webkit-line-clamp: 1;
-text-align: center;
-border-top: 1px solid #e3e3e3;
-`
-
-
 const StyledInputGroup = styled(Input.Group)`
     display: flex;
 `
@@ -70,9 +42,7 @@ const StyledButton = styled(Button)`
 export {
 
     BooksGrid,
-    BookItemGrid,
-    BookItemImage,
-    BookItemTitle,BookGridWrapper,
+    BookGridWrapper,
     StyledInputGroup,
     StyledButton,
     HeaderWrapper

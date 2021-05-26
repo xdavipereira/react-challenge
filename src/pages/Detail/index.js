@@ -6,7 +6,7 @@ import {
   addToFavorite,
   selectBookById,
   removeFromFavorite,
-} from "../Home/booksSlice";
+} from "../../reducers/booksSlice";
 import noImage from "../../assets/img/noimage.jpeg";
 import {
   DetailContainerWrapper,
@@ -22,7 +22,6 @@ import {
   StyledFavotiteBtn,
   TitleWrapper
 }  from './styles'
-import Favorite from "../../components/Favorite";
 
 
 export function Detail() {
@@ -69,7 +68,7 @@ export function Detail() {
             <h1>{selectedBook.volumeInfo.title}</h1>
 
             <StyledFavotiteBtn
-              starred={selectedBook.starred ? true : undefined}
+              starred={selectedBook.starred ? 'true' : undefined}
               onChange={handleOnChangeStar}
             />
           </TitleWrapper>

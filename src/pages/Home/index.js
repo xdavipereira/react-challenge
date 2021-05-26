@@ -7,20 +7,18 @@ import {
   selectAllBooks,
   selectBookStatus,
   selectTotalBooks,
-} from "./booksSlice";
+} from "../../reducers/booksSlice";
 
-import noImage from "../../assets/img/noimage.jpeg";
 import {
   BookGridWrapper,
-  BookItemGrid,
-  BookItemImage,
-  BookItemTitle,
   BooksGrid,
   HeaderWrapper,
   StyledButton,
   StyledInputGroup,
 } from "./styles";
 import { useHistory } from "react-router";
+import Book from "../../components/Book";
+import { addQuery, selectQueryValues } from "../../reducers/querySlice";
 
 const { Search } = Input;
 
@@ -29,11 +27,13 @@ export function Home() {
 
   const history = useHistory();
 
-  const books = useSelector(selectAllBooks);
+  const booksData = useSelector(selectAllBooks);
 
   const bookStatus = useSelector(selectBookStatus);
 
   const totalBooks = useSelector(selectTotalBooks);
+
+  const queryValues = useSelector(selectQueryValues);
 
   const [query, setQuery] = React.useState("");
 
@@ -41,10 +41,20 @@ export function Home() {
 
   const [startIndex, setStartIndex] = React.useState(0);
 
-  const [maxResults] = React.useState(10);
+  const [maxResults, setMaxResults] = React.useState(10);
 
   useEffect(() => {
-    handleOnSearch("");
+    if (booksData.books.length === 0) {
+      handleOnSearch("");
+    } else {
+      debugger
+      setQuery(queryValues.query)
+      setStartIndex(queryValues.startIndex)
+      setMaxResults(queryValues.maxResults)
+      setQuerySelect(queryValues.filter)
+
+    }
+
   }, []);
 
   function handleOnSearch(data) {
@@ -73,6 +83,16 @@ export function Home() {
     );
 
     setStartIndex(newStartIndex);
+    
+    dispatch(addQuery(
+      {
+        query,
+        startIndex: newStartIndex,
+        filter: querySelect,
+        maxResults,
+      }
+    ))
+  
   }
 
   function goesToDetail(data) {
@@ -81,6 +101,10 @@ export function Home() {
 
   function handleSelect(value) {
     setQuerySelect(value);
+  }
+
+  function handleOnChange(e) {
+    setQuery(e.target.value);
   }
 
   return (
@@ -93,30 +117,19 @@ export function Home() {
             <Select.Option value="inauthor">Author</Select.Option>
             <Select.Option value="intitle">Title</Select.Option>
           </Select>
-          <Search placeholder="Search" onSearch={handleOnSearch} />
+          <Search placeholder="Search" value={query} onChange={handleOnChange} onSearch={handleOnSearch} />
         </StyledInputGroup>
       </HeaderWrapper>
 
       {totalBooks === 0 && bookStatus === "succeeded" && <Empty />}
 
       <BooksGrid>
-        {books.books.map((item, index) => {
-          return (
-            <BookItemGrid onClick={() => goesToDetail(item.id)} key={index}>
-              <BookItemImage
-                src={
-                  item.volumeInfo.imageLinks
-                    ? item.volumeInfo.imageLinks.thumbnail
-                    : noImage
-                }
-              ></BookItemImage>
-              <BookItemTitle>{item.volumeInfo.title}</BookItemTitle>
-            </BookItemGrid>
-          );
+        {booksData.books.map((item, index) => {
+          return <Book key={index} data={item} onClick={goesToDetail} />;
         })}
       </BooksGrid>
 
-      {books.books.length > 0 && (
+      {booksData.books.length > 0 && (
         <StyledButton
           type="primary"
           shape="round"
