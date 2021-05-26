@@ -8,6 +8,7 @@ export const selectBookById =  (state, bookId) => state.books.books.find( book =
 
 const initialState = {
     books: [],
+    favorites: [],
     status: 'idle',
     error: null
   }
@@ -26,6 +27,35 @@ const booksSlice = createSlice({
   name: 'books',
   initialState,
   reducers: {
+    addToFavorite(state, action) {
+
+      const existingBook = state.books.find(item => item.id === action.payload.id);
+
+      if(existingBook) {
+        existingBook.starred = true
+      }
+
+
+      state.favorites.push({...existingBook});
+
+    },
+    removeFromFavorite(state, action) {
+
+      const existingBook = state.books.find(item => item.id === action.payload.id);
+
+      if(existingBook) {
+        existingBook.starred = false
+      }
+
+      const indexFavorites = state.favorites.findIndex(item => item.id === action.payload.id);
+      
+      state.favorites = [...state.favorites.slice(0, indexFavorites), ...state.favorites.slice(indexFavorites + 1)]
+
+
+
+    }
+
+    
   },
   extraReducers: {
     [fetchBooks.pending]: (state, action) => {
@@ -46,7 +76,7 @@ const booksSlice = createSlice({
   }
 })
 
-export const { getBooks } = booksSlice.actions
+export const { addToFavorite, removeFromFavorite } = booksSlice.actions
 
 export default booksSlice.reducer
 

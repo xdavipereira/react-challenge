@@ -1,10 +1,14 @@
 import { Button } from "antd";
+import {
+    StarFilled
+  } from '@ant-design/icons';
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
-import { selectBookById } from "../Home/booksSlice";
+import { addToFavorite, selectBookById, removeFromFavorite } from "../Home/booksSlice";
 import noImage from '../../assets/img/noimage.jpeg'
 import styled from "styled-components";
+import Favorite from "../../components/Favorite";
 
 
 
@@ -80,6 +84,20 @@ export function Detail() {
 
     })
 
+    function handleAddFavorite() {
+
+        dispatch(addToFavorite(selectedBook));
+    }
+
+    function handleOnChangeStar(data) {
+
+        if(data) {
+            dispatch(addToFavorite(selectedBook));
+        } else {
+            dispatch(removeFromFavorite(selectedBook));
+        }
+    }
+
 
     return (
         <DetailContainerWrapper>
@@ -118,6 +136,10 @@ export function Detail() {
 
                 </ListDetails>
                         <Button type="primary" shape="round" size="large" onClick={() => history.goBack()} >Voltar ...</Button> 
+                     
+                        <Favorite starred={selectedBook.starred ? true : false}  onChange={handleOnChangeStar} />
+                     
+                        <Button type="primary" shape="round" size="large" onClick={handleAddFavorite} > Favorite </Button> 
 
             </InfoDetail>
  
