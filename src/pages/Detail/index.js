@@ -8,59 +8,22 @@ import {
   removeFromFavorite,
 } from "../Home/booksSlice";
 import noImage from "../../assets/img/noimage.jpeg";
-import styled from "styled-components";
+import {
+  DetailContainerWrapper,
+  DetailContentWrapper,
+  DetailBookImageWrapper,
+  InfoDetail,
+  ListDetails,
+  BookItemImage,
+  Paragraph,
+  ListItem,
+  ListAuthors,
+  Span,
+  StyledFavotiteBtn,
+  TitleWrapper
+}  from './styles'
 import Favorite from "../../components/Favorite";
 
-const DetailContainerWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: center;
-`;
-
-const DetailContentWrapper = styled.div`
-  width: 80%;
-  display: flex;
-`;
-
-const DetailBookImageWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-flow: column;
-`;
-
-const InfoDetail = styled.div`
-  padding: 1em; ;
-`;
-
-const ListDetails = styled.ul`
-  list-style: none;
-  padding: 0;
-`;
-
-const BookItemImage = styled.img`
-  width: 128px;
-  height: 192px;
-`;
-
-const Paragraph = styled.p``;
-
-const ListItem = styled.li`
-  display: flex;
-  border-top: 1px solid #e3e3e3;
-  align-items: center;
-  min-height: 3rem;
-  padding-right: 1em;
-  flex-wrap: wrap;
-`;
-
-const ListAuthors = styled.li`
-  display: flex;
-`;
-
-const Span = styled.span`
-  font-weight: 700;
-  padding-right: 0.2rem;
-`;
 
 export function Detail() {
   const history = useHistory();
@@ -75,9 +38,6 @@ export function Detail() {
     }
   }, []);
 
-  function handleAddFavorite() {
-    dispatch(addToFavorite(selectedBook));
-  }
 
   function handleOnChangeStar(data) {
     if (data) {
@@ -105,20 +65,44 @@ export function Detail() {
           ></BookItemImage>
         </DetailBookImageWrapper>
         <InfoDetail>
-          <h1>{selectedBook.volumeInfo.title}</h1>
+          <TitleWrapper>
+            <h1>{selectedBook.volumeInfo.title}</h1>
+
+            <StyledFavotiteBtn
+              starred={selectedBook.starred ? true : undefined}
+              onChange={handleOnChangeStar}
+            />
+          </TitleWrapper>
           <ListDetails>
             <ListItem>
               <Paragraph> {selectedBook.volumeInfo.description}</Paragraph>
             </ListItem>
 
+            { selectedBook.volumeInfo.authors &&
+              <ListItem>
+                <Span>Authors: </Span>
+                <ListAuthors>
+                  {selectedBook.volumeInfo.authors.map((author, index) => {
+                    return <span key={index}>{author}  &nbsp;&nbsp;&nbsp;</span>;
+                  })}
+                </ListAuthors>
+              </ListItem>
+
+            }
+
+            {selectedBook.volumeInfo.categories &&
+
             <ListItem>
-              <Span>Authors: </Span>
+              <Span>Categories: </Span>
               <ListAuthors>
-                {selectedBook.volumeInfo.authors.map((author, index) => {
-                  return <ListItem key={index}>{author}</ListItem>;
+                {selectedBook.volumeInfo.categories.map((category, index) => {
+                  return <span key={index}>{category} &nbsp;&nbsp;&nbsp;     </span> ;
                 })}
               </ListAuthors>
             </ListItem>
+
+            }
+
             <ListItem>
               <Span>Pages: </Span> {selectedBook.volumeInfo.pageCount}
             </ListItem>
@@ -133,22 +117,7 @@ export function Detail() {
             size="large"
             onClick={() => history.goBack()}
           >
-            Voltar ...
-          </Button>
-
-          <Favorite
-            starred={selectedBook.starred ? true : false}
-            onChange={handleOnChangeStar}
-          />
-
-          <Button
-            type="primary"
-            shape="round"
-            size="large"
-            onClick={handleAddFavorite}
-          >
-            {" "}
-            Favorite{" "}
+            Back
           </Button>
         </InfoDetail>
       </DetailContentWrapper>

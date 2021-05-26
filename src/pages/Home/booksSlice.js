@@ -6,10 +6,9 @@ export const selectAllBooks = (state) => state.books;
 export const selectBookById = (state, bookId) =>
   state.books.books.find((book) => book.id === bookId);
 
-export const selectBookStatus = state => state.books.status;
+export const selectBookStatus = (state) => state.books.status;
 
-export const selectTotalBooks = state => state.books.totalItems;
-
+export const selectTotalBooks = (state) => state.books.totalItems;
 
 const initialState = {
   books: [],

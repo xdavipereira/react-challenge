@@ -1,4 +1,4 @@
-import { Input, Button, Select, Empty } from "antd";
+import { Input, Select, Empty } from "antd";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -21,8 +21,6 @@ import {
   StyledInputGroup,
 } from "./styles";
 import { useHistory } from "react-router";
-
-import { BookOutlined } from "@ant-design/icons";
 
 const { Search } = Input;
 
@@ -48,7 +46,6 @@ export function Home() {
   useEffect(() => {
     handleOnSearch("");
   }, []);
-  console.log(totalBooks, bookStatus);
 
   function handleOnSearch(data) {
     dispatch(
