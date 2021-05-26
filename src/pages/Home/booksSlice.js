@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 
+export const selectAllBooks = state => state.books;
+
+
 const initialState = {
     books: [],
     status: 'idle',
@@ -8,9 +11,12 @@ const initialState = {
   }
 
 
-export const fetchBooks = createAsyncThunk('books/fetchBooks', async (query) => {
-    const response = await axios.get(`https://www.googleapis.com/books/v1/volumes?startIndex=0&printType=books&maxResults=5&q=${query}`)
-    return response.data.items;
+export const fetchBooks = createAsyncThunk('books/fetchBooks', async (searchObject) => {
+    const response = await axios.get(`https://www.googleapis.com/books/v1/volumes?startIndex=${searchObject.startIndex}&printType=books&maxResults=5&q=${searchObject.query}`)
+    return {
+      items: response.data.items ? response.data.items  : [],
+      queryParams: searchObject
+    };
 })
   
 
@@ -25,7 +31,11 @@ const booksSlice = createSlice({
     },
     [fetchBooks.fulfilled]: (state, action) => {
       state.status = 'succeeded'
-      state.books = state.books.concat(action.payload)
+      if(action.payload.queryParams.startIndex === 0) {
+        state.books = [...action.payload.items];
+      } else {
+        state.books = state.books.concat(action.payload.items)
+      }
     },
     [fetchBooks.rejected]: (state, action) => {
       state.status = 'failed'
@@ -39,4 +49,3 @@ export const { getBooks } = booksSlice.actions
 export default booksSlice.reducer
 
 
-export const selectAllBooks = state => state.books;
