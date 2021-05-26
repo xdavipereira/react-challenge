@@ -5,10 +5,7 @@ import {
   Redirect
 } from "react-router-dom";
 import Home from "./pages/Home";
-import { createBrowserHistory } from "history";
 import Detail from "./pages/Detail";
-
-const customHistory = createBrowserHistory();
 
 
 function App() {

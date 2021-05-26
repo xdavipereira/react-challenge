@@ -1,6 +1,5 @@
 import { StarOutlined } from "@ant-design/icons";
 import React from "react";
-import { useEffect } from "react";
 import styled from "styled-components";
 
 const StyledButton = styled(StarOutlined)`

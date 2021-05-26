@@ -1,153 +1,159 @@
-import { Button } from "antd";
-import {
-    StarFilled
-  } from '@ant-design/icons';
+import { Button, Spin } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
-import { addToFavorite, selectBookById, removeFromFavorite } from "../Home/booksSlice";
-import noImage from '../../assets/img/noimage.jpeg'
+import {
+  addToFavorite,
+  selectBookById,
+  removeFromFavorite,
+} from "../Home/booksSlice";
+import noImage from "../../assets/img/noimage.jpeg";
 import styled from "styled-components";
 import Favorite from "../../components/Favorite";
 
-
-
 const DetailContainerWrapper = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: center;
-`
-
+  display: flex;
+  width: 100%;
+  justify-content: center;
+`;
 
 const DetailContentWrapper = styled.div`
-    width: 80%;
-    display: flex;
-
-`
+  width: 80%;
+  display: flex;
+`;
 
 const DetailBookImageWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-flow: column;
-`
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+`;
 
 const InfoDetail = styled.div`
-    padding: 1em;;
-`
+  padding: 1em; ;
+`;
 
 const ListDetails = styled.ul`
-    list-style: none;
-    padding: 0;
-`
+  list-style: none;
+  padding: 0;
+`;
 
-const BookItemImage =  styled.img`
-width: 128px;
-height: 192px;
-
-`
+const BookItemImage = styled.img`
+  width: 128px;
+  height: 192px;
+`;
 
 const Paragraph = styled.p``;
 
 const ListItem = styled.li`
-    display: flex;
-    border-top: 1px solid #e3e3e3;
-    align-items: center;
-    min-height: 3rem;
-    padding-right: 1em;
-    flex-wrap: wrap;
+  display: flex;
+  border-top: 1px solid #e3e3e3;
+  align-items: center;
+  min-height: 3rem;
+  padding-right: 1em;
+  flex-wrap: wrap;
 `;
 
-
 const ListAuthors = styled.li`
-    display: flex;
+  display: flex;
 `;
 
 const Span = styled.span`
-    font-weight: 700;
-    padding-right: 0.2rem;
-`
-
-
+  font-weight: 700;
+  padding-right: 0.2rem;
+`;
 
 export function Detail() {
+  const history = useHistory();
 
-    const history = useHistory();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const selectedBook = useSelector((state) => selectBookById(state, id));
 
-    const dispatch = useDispatch();
-    const { id } = useParams();
-    const selectedBook = useSelector(state => selectBookById(state, id))
-
-
-    useEffect(() => {
-
-        console.log(selectedBook)
-
-    })
-
-    function handleAddFavorite() {
-
-        dispatch(addToFavorite(selectedBook));
+  useEffect(() => {
+    if(!selectedBook) {
+      history.push('/');
     }
+  }, []);
 
-    function handleOnChangeStar(data) {
+  function handleAddFavorite() {
+    dispatch(addToFavorite(selectedBook));
+  }
 
-        if(data) {
-            dispatch(addToFavorite(selectedBook));
-        } else {
-            dispatch(removeFromFavorite(selectedBook));
-        }
+  function handleOnChangeStar(data) {
+    if (data) {
+      dispatch(addToFavorite(selectedBook));
+    } else {
+      dispatch(removeFromFavorite(selectedBook));
     }
+  }
 
 
-    return (
-        <DetailContainerWrapper>
-            <DetailContentWrapper>
+  if(!selectedBook) {
+    return <Spin></Spin>
+  }
 
-               
-            <DetailBookImageWrapper>
-                        <BookItemImage src={selectedBook.volumeInfo.imageLinks ? selectedBook.volumeInfo.imageLinks.thumbnail : noImage }></BookItemImage>
-            </DetailBookImageWrapper>
-            <InfoDetail>
+  return (
+    <DetailContainerWrapper>
+      <DetailContentWrapper>
+        <DetailBookImageWrapper>
+          <BookItemImage
+            src={
+              selectedBook.volumeInfo.imageLinks
+                ? selectedBook.volumeInfo.imageLinks.thumbnail
+                : noImage
+            }
+          ></BookItemImage>
+        </DetailBookImageWrapper>
+        <InfoDetail>
+          <h1>{selectedBook.volumeInfo.title}</h1>
+          <ListDetails>
+            <ListItem>
+              <Paragraph> {selectedBook.volumeInfo.description}</Paragraph>
+            </ListItem>
 
-                <h1>{selectedBook.volumeInfo.title}</h1>
-                <ListDetails>
-                    <ListItem>
-                        <Paragraph> {selectedBook.volumeInfo.description}</Paragraph>
-                    </ListItem>
+            <ListItem>
+              <Span>Authors: </Span>
+              <ListAuthors>
+                {selectedBook.volumeInfo.authors.map((author, index) => {
+                  return <ListItem key={index}>{author}</ListItem>;
+                })}
+              </ListAuthors>
+            </ListItem>
+            <ListItem>
+              <Span>Pages: </Span> {selectedBook.volumeInfo.pageCount}
+            </ListItem>
+            <ListItem>
+              <Span>Release Date: </Span>{" "}
+              {selectedBook.volumeInfo.publishedDate}
+            </ListItem>
+          </ListDetails>
+          <Button
+            type="primary"
+            shape="round"
+            size="large"
+            onClick={() => history.goBack()}
+          >
+            Voltar ...
+          </Button>
 
-                    <ListItem>
-                        <Span>Authors: </Span>
-                        <ListAuthors>
-                                {selectedBook.volumeInfo.authors.map((author, index) => {
-                                    return <ListItem key={index}>{author}</ListItem>
-                                })}
-                         </ListAuthors>
+          <Favorite
+            starred={selectedBook.starred ? true : false}
+            onChange={handleOnChangeStar}
+          />
 
-                    </ListItem>
-                    <ListItem>
-                    <Span>Pages: </Span> {selectedBook.volumeInfo.pageCount}
-
-                    </ListItem>
-                    <ListItem>
-                    <Span>Release Date: </Span> {selectedBook.volumeInfo.publishedDate}
-                    </ListItem>
-
-
-
-                </ListDetails>
-                        <Button type="primary" shape="round" size="large" onClick={() => history.goBack()} >Voltar ...</Button> 
-                     
-                        <Favorite starred={selectedBook.starred ? true : false}  onChange={handleOnChangeStar} />
-                     
-                        <Button type="primary" shape="round" size="large" onClick={handleAddFavorite} > Favorite </Button> 
-
-            </InfoDetail>
- 
-            </DetailContentWrapper>
-
-
-        </DetailContainerWrapper>
-    )
+          <Button
+            type="primary"
+            shape="round"
+            size="large"
+            onClick={handleAddFavorite}
+          >
+            {" "}
+            Favorite{" "}
+          </Button>
+        </InfoDetail>
+      </DetailContentWrapper>
+    </DetailContainerWrapper>
+  );
 }
 
 export default Detail;
