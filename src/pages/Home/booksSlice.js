@@ -3,6 +3,8 @@ import axios from 'axios'
 
 export const selectAllBooks = state => state.books;
 
+export const selectBookById =  (state, bookId) => state.books.books.find( book => book.id == bookId);
+
 
 const initialState = {
     books: [],

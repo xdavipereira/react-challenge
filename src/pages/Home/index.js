@@ -5,8 +5,9 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { fetchBooks, selectAllBooks } from "./booksSlice";
 
-import noImage from '../noimage.jpeg'
+import noImage from '../../assets/img/noimage.jpeg'
 import { BookItemGrid, BookItemImage, BookItemTitle, BooksGrid } from "./styles";
+import { useHistory } from "react-router";
 
 
 const { Search } = Input;
@@ -15,6 +16,9 @@ const { Search } = Input;
 export function Home() {
 
     const dispatch = useDispatch();
+
+    const history = useHistory();
+
     const books = useSelector(selectAllBooks);
 
     const [query, setQuery] = React.useState('');
@@ -22,12 +26,18 @@ export function Home() {
     const [startIndex, setStartIndex] = React.useState(0);
     const [maxResults, setMaxResults] = React.useState(5);
 
+    // useEffect(() => {
+    //     handleOnSearch('harry potter')
+    // }, [dispatch])
+
 
     function handleOnSearch(data) {
         dispatch(fetchBooks({query: data, startIndex: 0 }));
         setQuery(data);
         setStartIndex(0);
     }
+
+
 
     function handleGetMoreBooks() {
 
@@ -39,6 +49,10 @@ export function Home() {
 
     }
 
+    function goesToDetail(data) {
+        history.push(`/${data}`);
+    }
+
 
     return (
 
@@ -48,7 +62,7 @@ export function Home() {
             {
                 books.books.map((item, index) => {
                     return (
-                        <BookItemGrid key={index}>
+                        <BookItemGrid onClick={() => goesToDetail(item.id)} key={index}>
                             <BookItemImage src={item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail: noImage} ></BookItemImage>
                             <BookItemTitle>{item.volumeInfo.title}</BookItemTitle>
                             
